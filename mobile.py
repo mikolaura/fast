@@ -2,9 +2,11 @@
 from PIL import Image
 import requests
 from fastapi import FastAPI
+import uvicorn
 app = FastAPI()
 import json
 from ultralytics import YOLO
+
 @app.post("/pred")
 def pred(url: str):
     image = Image.open(requests.get(url, stream=True).raw)
@@ -23,3 +25,6 @@ def pred(url: str):
             res.append(names[int(c)])
     some_dict = {"results": res}
     return json.dumps(some_dict, indent=4, default=str)
+
+if __name__=="__main__":
+    uvicorn.run(app, host="localhost", port=8000)
